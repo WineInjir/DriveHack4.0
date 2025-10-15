@@ -7,7 +7,6 @@ const systemPrompt = {
 
 let messages = [systemPrompt];
 
-// === TTS: Озвучка ответа ===
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ru-RU';
@@ -15,7 +14,6 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-// === Голосовой ввод (STT) ===
 const micBtn = document.getElementById('micBtn');
 micBtn.addEventListener('click', startRecognition);
 
@@ -51,7 +49,6 @@ function startRecognition() {
   };
 }
 
-// === Отправка запроса в GigaChat ===
 async function sendMessage() {
   const input = document.getElementById('userInput');
   const userText = input.value.trim();
@@ -86,7 +83,6 @@ async function sendMessage() {
   }
 }
 
-// === Отображение сообщений ===
 function addMessage(sender, text, cssClass) {
   const chat = document.getElementById("chat");
   const messageEl = document.createElement("div");
