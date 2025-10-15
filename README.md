@@ -1,1 +1,1 @@
-i use kubuntu BTW
+arch better
