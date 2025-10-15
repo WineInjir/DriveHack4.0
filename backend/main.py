@@ -13,6 +13,7 @@ app.static("/", str(STATIC_DIR), name="index_static")
 async def index(request: Request) -> HTTPResponse:
     data = request.json
     print(json.dumps(data))
+    return text("missing")
 
 if __name__ == "__main__":
     app.run("127.0.0.2", 8080)
