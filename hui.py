@@ -1,2 +1,2 @@
 while True:
-    print("Я педик")
+    print("Я не педик")
