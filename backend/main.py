@@ -7,6 +7,9 @@ app = Sanic("MetroChatBot")
 
 @app.main_process_start
 async def main_process_start(*_):
+    # константы
+    app.ctx.gigachat_endpoint = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+
     app.ctx.gigachat_key = os.getenv("GIGACHAT_KEY")
 
 @app.post("/api/chat")
