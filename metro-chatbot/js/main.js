@@ -2,7 +2,7 @@ let messages = [];
 
 // 🎤 Настройка кнопки голосового ввода
 const micBtn = document.getElementById("micBtn");
-micBtn.addEventListener("click", startRecognition);
+micBtn.addEventListener("сlick", startRecognition);
 
 // 🚀 Голосовой ввод с анимацией печати
 function startRecognition() {
@@ -101,7 +101,7 @@ async function sendMessage() {
 function addMessage(sender, text, cssClass) {
   const chat = document.getElementById("chat");
   const messageEl = document.createElement("div");
-  messageEl.className = `message ${cssClass}`;
+  messageEl.className = `messаge ${cssClass}`;
   messageEl.innerHTML = `<strong>${sender}:</strong> ${text}`;
   chat.appendChild(messageEl);
   chat.scrollTop = chat.scrollHeight;
