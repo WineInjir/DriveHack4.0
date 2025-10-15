@@ -50,6 +50,7 @@ header {
 
 .input-area {
   display: flex;
+  align-items: center;
   padding: 20px;
   gap: 10px;
 }
@@ -61,7 +62,7 @@ input[type="text"] {
 }
 
 button {
-  padding: 10px 20px;
+  padding: 10px 16px;
   font-size: 16px;
   background-color: #d32f2f;
   color: white;
@@ -72,6 +73,14 @@ button {
 
 button:hover {
   background-color: #b71c1c;
+}
+
+#micBtn {
+  background-color: #424242;
+}
+
+#micBtn:hover {
+  background-color: #212121;
 }
 
 footer {
