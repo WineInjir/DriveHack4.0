@@ -17,6 +17,7 @@ async def main_process_start(*_):
     
     # другое
     app.ctx.giga = gigachat.GigaChat()
+'''
 
 @app.post("/api/chat")
 async def index(request: Request) -> HTTPResponse:
@@ -38,4 +39,3 @@ async def index(request: Request) -> HTTPResponse:
 
 if __name__ == "__main__":
     app.run(os.getenv("HOST"), int(os.getenv("PORT")))
-'''
