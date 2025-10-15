@@ -1,6 +1,2 @@
-.env
 __pycache__/
-backend/.venv/
-.venv/
 /backend/token.txt
-test.py

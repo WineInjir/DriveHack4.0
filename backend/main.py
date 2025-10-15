@@ -10,12 +10,9 @@ app = Sanic("MetroChatBot")
 async def setup(_app, _):
     _app.ctx.gigachat_url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
 
-    try:
-        with open(os.path.join(os.path.dirname(__file__), "token.txt"), "r", encoding="utf-8") as f:
-            _app.ctx.gigachat_token = f.read().strip()
-    except FileNotFoundError:
-        raise RuntimeError("Файл token.txt не найден. Положи токен в backend/token.txt")
-
+    # переменные среды
+    with open("token.txt", "r") as f:
+        app.ctx.gigachat_key = f.read().decode()
 
 @app.post("/api/chat")
 async def proxy_gigachat(request: Request) -> HTTPResponse:
@@ -39,4 +36,4 @@ async def proxy_gigachat(request: Request) -> HTTPResponse:
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(os.getenv("HOST"), int(os.getenv("PORT")))
