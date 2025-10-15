@@ -1,4 +1,5 @@
 const API_TOKEN = 'MDE5OWU3NDUtOTYzMC03OTA4LWFmODUtMTBhZmVmYWJhMWY5OjRiYTFhYzUxLWE1YWQtNDQ5YS1iNDBkLWJhYjZkY2UwZGZjMA==';
+// уберите токен из клиент сайд скрипта :wheelchair:
 
 const systemPrompt = {
   role: "system",
