@@ -1,39 +1,34 @@
 from sanic import Sanic
 from sanic.request import Request
-from sanic.response import json as sanic_json, HTTPResponse
-import aiohttp
-import os
+from sanic.response import HTTPResponse, text
+import os, aiohttp
+from gigachat import GigaChat
 
 app = Sanic("MetroChatBot")
 
-@app.main_process_start
-async def setup(_app, _):
-    _app.ctx.gigachat_url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
 
-    # переменные среды
-    with open("token.txt", "r") as f:
-        app.ctx.gigachat_key = f.read().decode()
+@app.main_process_start
+async def main_process_start(*_):
+    app.ctx.gigachat_token = GigaChat(credentials="MDE5OWU3NDUtOTYzMC03OTA4LWFmODUtMTBhZmVmYWJhMWY5OmQxMjMzOTdiLTllZDQtNDIwNS1iMDQwLTljZjk0OGE1YzlkMw==",)
+    app.ctx.gigachat_request_token = app.ctx.gigachat_token.get_token()
 
 @app.post("/api/chat")
-async def proxy_gigachat(request: Request) -> HTTPResponse:
-    try:
-        payload = request.json
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                request.app.ctx.gigachat_url,
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {request.app.ctx.gigachat_token}"
-                },
-                json=payload
-            ) as resp:
-                data = await resp.json()
-                return sanic_json(data, status=resp.status)
-
-    except Exception as e:
-        return sanic_json({"error": str(e)}, status=500)
-
+async def index(request: Request) -> HTTPResponse:
+    #  body: JSON.stringify({
+    #   model: "GigaChat",
+    #   messages: messages,
+    #   temperature: 0.7
+    # })
+    async with aiohttp.request(
+        method="POST",
+        url=request.app.ctx.gigachat_endpoint,
+        json={
+            "model": "GigaChat",
+            "messages": [],
+            "temperature": 0.7,
+        },
+    ):
+        pass
 
 if __name__ == "__main__":
-    app.run(os.getenv("HOST"), int(os.getenv("PORT")))
+    app.run("127.0.0.1", 8080)
