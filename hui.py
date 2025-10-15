@@ -1,2 +1,6 @@
 while True:
-    print("Я не педик")
+    you = 'pedik'
+    if you == 'pedik' or 'педик':
+        print("Я не педик")
+    else:
+        print('Я "педик"')
