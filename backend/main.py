@@ -16,10 +16,19 @@ async def main_process_start(*_):
 
 @app.post("/api/chat")
 async def index(request: Request) -> HTTPResponse:
+    #  body: JSON.stringify({
+    #   model: "GigaChat",
+    #   messages: messages,
+    #   temperature: 0.7
+    # })
     async with aiohttp.request(
         method="POST",
         url=request.app.ctx.gigachat_endpoint,
-        json={"sosal": True},
+        json={
+            "model": "GigaChat",
+            "messages": [],
+            "temperature": 0.7,
+        },
     ):
         pass
 
