@@ -1,2 +1,2 @@
 ## Sigma ChatBot
-## - Pediki
+## PedikiSdohnut
