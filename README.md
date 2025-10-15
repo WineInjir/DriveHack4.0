@@ -1,1 +1,1 @@
-## Ai ChatBot metro helper for russia metro
+## Ai ChatBot metro helper for russian metro
