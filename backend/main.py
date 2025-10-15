@@ -5,6 +5,7 @@ import os, aiohttp, gigachat
 
 app = Sanic("MetroChatBot")
 
+'''
 @app.main_process_start
 async def main_process_start(*_):
     # константы
@@ -37,3 +38,4 @@ async def index(request: Request) -> HTTPResponse:
 
 if __name__ == "__main__":
     app.run(os.getenv("HOST"), int(os.getenv("PORT")))
+'''
