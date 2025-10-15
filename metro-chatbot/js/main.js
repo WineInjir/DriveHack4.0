@@ -1,9 +1,4 @@
-const systemPrompt = {
-  role: "system",
-  content: `Ты — AI-консультант по Московскому метрополитену. Отвечай вежливо, понятно и только на вопросы, связанные с метро. Если вопрос не по теме — вежливо откажись. Отвечай живым, человеческим языком, как сотрудник справочной службы.`
-};
-
-let messages = [systemPrompt];
+let messages = [];
 
 // 🎤 Настройка кнопки голосового ввода
 const micBtn = document.getElementById("micBtn");
@@ -82,9 +77,7 @@ async function sendMessage() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "GigaChat",
-        messages: messages,
-        temperature: 0.7
+        messages: messages
       })
     });
 
