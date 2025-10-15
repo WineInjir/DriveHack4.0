@@ -60,7 +60,7 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-// 📤 Отправка сообщения
+// 📤 Отправка сообщения на локальный сервер
 async function sendMessage() {
   const input = document.getElementById("userInput");
   const userText = input.value.trim();
@@ -71,27 +71,34 @@ async function sendMessage() {
   input.value = "";
 
   try {
-    const response = await fetch("/api/chat", {
+    // Логируем отправляемые данные
+    console.log("Отправка на сервер:", {
+      messages: messages
+    });
+
+    // Отправляем запрос на сервер
+    const response = await fetch("http://127.0.0.1:8080/api/chat", { // Обрати внимание, URL локальный
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        messages: messages
+        messages: messages // отправляем сообщения для обработки
       })
     });
 
-    const data = await response.json();
+    const data = await response.json(); // получаем ответ от сервера
 
     if (data.choices && data.choices[0]) {
       const botReply = data.choices[0].message.content;
       messages.push({ role: "assistant", content: botReply });
       addMessage("Бот", botReply, "bot");
-      speak(botReply); // Озвучка
+      speak(botReply); // Озвучиваем ответ
     } else {
       addMessage("Бот", "Произошла ошибка при получении ответа от сервера.", "bot");
     }
   } catch (error) {
+    // Обработка ошибок
     addMessage("Бот", "Ошибка сети или сервера. Попробуйте позже.", "bot");
     console.error("Ошибка отправки:", error);
   }
@@ -100,7 +107,7 @@ async function sendMessage() {
 // 🧱 Добавление сообщения в чат
 function addMessage(sender, text, cssClass) {
   const chat = document.getElementById("chat");
-  const messageEl = document.createElement("div");
+  const messageEl = document.createElement("div");    
   messageEl.className = `message ${cssClass}`;
   messageEl.innerHTML = `<strong>${sender}:</strong> ${text}`;
   chat.appendChild(messageEl);
