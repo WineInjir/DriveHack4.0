@@ -5,6 +5,7 @@ import os, aiohttp, gigachat
 
 app = Sanic("MetroChatBot")
 
+'''
 @app.main_process_start
 async def main_process_start(*_):
     # константы
@@ -16,6 +17,7 @@ async def main_process_start(*_):
     
     # другое
     app.ctx.giga = gigachat.GigaChat()
+'''
 
 @app.post("/api/chat")
 async def index(request: Request) -> HTTPResponse:
