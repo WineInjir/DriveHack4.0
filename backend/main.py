@@ -1,7 +1,7 @@
 from sanic import Sanic
 from sanic.request import Request
 from sanic.response import HTTPResponse, text
-import os, aiohttp
+import os, aiohttp, gigachat
 
 app = Sanic("MetroChatBot")
 
@@ -13,6 +13,9 @@ async def main_process_start(*_):
     # переменные среды
     with open("token.txt", "r") as f:
         app.ctx.gigachat_key = f.read().decode()
+    
+    # другое
+    app.ctx.giga = gigachat.GigaChat()
 
 @app.post("/api/chat")
 async def index(request: Request) -> HTTPResponse:
