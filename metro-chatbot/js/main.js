@@ -60,14 +60,17 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-// 📤 Отправка сообщения на локальный сервер
+// 📤 Отправка только нового сообщения на сервер
 async function sendMessage() {
   const input = document.getElementById("userInput");
   const userText = input.value.trim();
   if (!userText) return;
 
   addMessage("Вы", userText, "user");
-  messages.push({ role: "user", content: userText });
+  
+  // Очистим массив сообщений, чтобы отправить только текущее сообщение
+  messages = [{ role: "user", content: userText }];
+  
   input.value = "";
 
   try {
@@ -91,7 +94,7 @@ async function sendMessage() {
 
     if (data.choices && data.choices[0]) {
       const botReply = data.choices[0].message.content;
-      messages.push({ role: "assistant", content: botReply });
+      messages.push({ role: "assistant", content: botReply }); // Добавляем ответ от бота в историю
       addMessage("Бот", botReply, "bot");
       speak(botReply); // Озвучиваем ответ
     } else {
@@ -107,7 +110,7 @@ async function sendMessage() {
 // 🧱 Добавление сообщения в чат
 function addMessage(sender, text, cssClass) {
   const chat = document.getElementById("chat");
-  const messageEl = document.createElement("div");    
+  const messageEl = document.createElement("div");
   messageEl.className = `message ${cssClass}`;
   messageEl.innerHTML = `<strong>${sender}:</strong> ${text}`;
   chat.appendChild(messageEl);
