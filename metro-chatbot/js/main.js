@@ -4,12 +4,57 @@
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
+const micBtn = document.getElementById("micBtn");
+
+let isRecording = false;
+let recognition;
+
+// --- инициализация распознавания речи ---
+if ("webkitSpeechRecognition" in window) {
+  recognition = new webkitSpeechRecognition();
+  recognition.lang = "ru-RU";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    input.value = text;
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+  };
+
+  recognition.onend = () => {
+    micBtn.classList.remove("recording");
+    isRecording = false;
+  };
+}
 
 // --- действия ---
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
+
+micBtn.addEventListener("mousedown", startRecording);
+micBtn.addEventListener("mouseup", stopRecording);
+micBtn.addEventListener("touchstart", startRecording);
+micBtn.addEventListener("touchend", stopRecording);
+
+function startRecording() {
+  if (!recognition || isRecording) return;
+  isRecording = true;
+  micBtn.classList.add("recording");
+  recognition.start();
+}
+
+function stopRecording() {
+  if (!recognition || !isRecording) return;
+  recognition.stop();
+  micBtn.classList.remove("recording");
+  isRecording = false;
+}
 
 // --- добавление сообщений ---
 function addMessage(sender, text, cls) {
@@ -47,7 +92,7 @@ function speak(text) {
   speechSynthesis.speak(u);
 }
 
-// --- основная логика отправки ---
+// --- отправка сообщений ---
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
