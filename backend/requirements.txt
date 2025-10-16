@@ -4,3 +4,6 @@ gigachat
 grpcio-tools
 pydub
 gtts
+gtts
+grpcio-tools
+pydub
