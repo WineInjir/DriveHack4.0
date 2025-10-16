@@ -3,3 +3,4 @@ aiohttp
 gigachat
 grpcio-tools
 pydub
+gtts
