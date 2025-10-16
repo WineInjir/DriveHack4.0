@@ -3,6 +3,8 @@ from sanic.response import json, file
 import aiohttp, pathlib, uuid, traceback, base64, tempfile, os
 from gtts import gTTS
 from datetime import datetime
+from elevenlabs.client import ElevenLabs
+from elevenlabs import play
 
 # ==============================
 # 🔧 НАСТРОЙКИ
@@ -12,6 +14,10 @@ CLIENT_SECRET = "08a0b6ae-0d81-4829-b6ec-0ca91aa08553"
 
 OAUTH_URL = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
 CHAT_URL = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+
+client = ElevenLabs(
+    api_key="sk_d060ec248d42109e512328ec6be6f15fad405879a419f407"
+)
 
 SYSTEM_PROMPT = (
     """
@@ -153,15 +159,23 @@ async def chat(request):
         bot_text = answer["choices"][0]["message"]["content"]
         write_log(f"🤖 Ответ бота: {bot_text[:100]}...")
 
-        # 🎤 Озвучка через gTTS
-        tts = gTTS(bot_text, lang="ru")
-        temp_audio = os.path.join(tempfile.gettempdir(), f"voice_{uuid.uuid4()}.mp3")
-        tts.save(temp_audio)
-        write_log(f"🎧 Аудио сохранено: {temp_audio}")
+        # 🎤 Озвучка через ElevenLabs
+        audio = client.text_to_speech.convert(
+            text=bot_text,
+            voice_id="kwajW3Xh5svCeKU5ky2S",
+            model_id="eleven_multilingual_v2",
+            output_format="mp3_44100_128",
+        )
 
-        return jso/n({
+        with open("metro-chatbot/temp.mp3", "wb") as f:
+           for b in audio:
+               f.write(b)
+
+        write_log(f"🎧 Аудио сохранено")
+
+        return json({
             "reply": bot_text,
-            "audio_url": f"/audio/{os.path.basename(temp_audio)}"
+            "audio_url": f"/audio/{os.path.basename("temp.mp3")}"
         })
 
     except Exception as e:
