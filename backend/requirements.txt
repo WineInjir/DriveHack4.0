@@ -4,3 +4,4 @@ gigachat
 grpcio-tools
 pydub
 gtts
+murf
