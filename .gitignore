@@ -2,3 +2,4 @@ __pycache__/
 backend/token.txt
 backend/.venv/
 /backend/server.log
+#gitignore
