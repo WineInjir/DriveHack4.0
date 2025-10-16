@@ -1,5 +1,3 @@
-// === main.js — рабочая версия с исправленным модальным окном и настройками ===
-
 document.addEventListener("DOMContentLoaded", () => {
   // --- элементы ---
   const chat = document.getElementById("chat");
@@ -25,15 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const githubLink = document.getElementById("githubLink");
 
-  // --- keys ---
   const LS = {
-    theme: "metro_theme", // "dark" | "light"
-    enter: "metro_enter_send", // "1" | "0"
-    tts: "metro_tts", // "1" | "0"
+    theme: "metro_theme", 
+    enter: "metro_enter_send",
+    tts: "metro_tts", 
     firstSeen: "metro_first_seen",
   };
 
-  // --- defaults ---
   function defaults() {
     return {
       theme: localStorage.getItem(LS.theme) || "dark",
@@ -42,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // --- apply theme ---
   function applyTheme(theme) {
     if (theme === "light") {
       document.documentElement.classList.add("light");
@@ -60,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
     themeToggle.checked = cur === "light";
   }
 
-  // --- apply enter behavior placeholder text + store ---
   function updateEnterBehaviorUI() {
     const enabled = enterToggle.checked;
     if (enabled) {
@@ -71,12 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(LS.enter, enabled ? "1" : "0");
   }
 
-  // --- tts enabled check ---
   function ttsEnabled() {
     return ttsToggle.checked;
   }
 
-  // --- load settings to UI ---
   function loadSettingsToUI() {
     const cfg = defaults();
     applyTheme(cfg.theme);
@@ -85,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateEnterBehaviorUI();
   }
 
-  // --- side panel toggles ---
   dotsBtn.addEventListener("click", () => {
     sidePanel.classList.toggle("open");
     sidePanel.setAttribute("aria-hidden", sidePanel.classList.contains("open") ? "false" : "true");
@@ -107,22 +98,18 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(LS.tts, e.target.checked ? "1" : "0");
   });
 
-  // --- First-visit modal logic ---
   function showFirstModalIfNeeded() {
     const seen = localStorage.getItem(LS.firstSeen);
     if (!seen) {
-      // set UI defaults in modal based on current defaults()
       const cfg = defaults();
-      // highlight buttons according to defaults
       setModalEnterSelection(cfg.enter === "1");
       setModalTtsSelection(cfg.tts === "1");
       firstModal.classList.remove("hidden");
     }
   }
 
-  // modal selection helpers
-  let modalEnterChoice = null; // "1" or "0"
-  let modalTtsChoice = null; // "1" or "0"
+  let modalEnterChoice = null;
+  let modalTtsChoice = null;
 
   function setModalEnterSelection(enabled) {
     modalEnterChoice = enabled ? "1" : "0";
@@ -141,29 +128,23 @@ document.addEventListener("DOMContentLoaded", () => {
   modalTtsNo.addEventListener("click", () => setModalTtsSelection(false));
 
   modalConfirm.addEventListener("click", () => {
-    // if user never touched modal choices, fall back to defaults
     if (modalEnterChoice === null) {
       modalEnterChoice = defaults().enter;
     }
     if (modalTtsChoice === null) {
       modalTtsChoice = defaults().tts;
     }
-
-    // save choices
     localStorage.setItem(LS.enter, modalEnterChoice);
     localStorage.setItem(LS.tts, modalTtsChoice);
     localStorage.setItem(LS.firstSeen, "1");
 
-    // apply to UI
     enterToggle.checked = modalEnterChoice === "1";
     ttsToggle.checked = modalTtsChoice === "1";
     updateEnterBehaviorUI();
 
-    // hide modal
     firstModal.classList.add("hidden");
   });
 
-  // --- speech recognition (microphone) ---
   let recognition = null;
   let isRecording = false;
   if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
