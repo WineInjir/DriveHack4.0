@@ -2,3 +2,5 @@ sanic
 aiohttp
 gigachat
 gtts
+grpcio-tools
+pydub
