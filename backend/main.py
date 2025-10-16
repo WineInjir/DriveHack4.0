@@ -159,7 +159,7 @@ async def chat(request):
         tts.save(temp_audio)
         write_log(f"🎧 Аудио сохранено: {temp_audio}")
 
-        return json({
+        return jso/n({
             "reply": bot_text,
             "audio_url": f"/audio/{os.path.basename(temp_audio)}"
         })

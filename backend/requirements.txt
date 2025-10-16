@@ -5,3 +5,4 @@ grpcio-tools
 pydub
 gtts
 murf
+elevenlabs
