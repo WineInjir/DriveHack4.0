@@ -1,32 +1,18 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI-Консультант Метро</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>🤖 AI-Консультант по Московскому метро</h1>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metro ChatBot 🚇</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div id="chat"></div>
+    <div id="inputArea">
+      <input id="userInput" type="text" placeholder="Введите сообщение..." autocomplete="off" />
+      <button id="sendBtn">Отправить</button>
+    </div>
 
-    <main>
-      <div id="chat" class="chat-box"></div>
-      <div class="input-area">
-        <button id="micBtn" title="Голосовой ввод 🎤">🎤</button>
-        <input type="text" id="userInput" placeholder="Задайте вопрос...">
-        <button onclick="sendMessage()">Отправить</button>
-      </div>
-    </main>
-
-    <footer>
-      <p>Разработано для DriveHack 4.0 🚇</p>
-    </footer>
-  </div>
-
-  <script src="js/main.js"></script>
-</body>
+    <script src="/js/main.js"></script>
+  </body>
 </html>
-  
