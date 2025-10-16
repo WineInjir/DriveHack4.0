@@ -1,17 +1,138 @@
-// === MetroChatBot Beautiful Frontend ===
 
-// --- элементы интерфейса ---
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
 
-let isRecording = false;
-let recognition;
+const dotsBtn = document.getElementById("dotsBtn");
+const sidePanel = document.getElementById("sidePanel");
+const closeSide = document.getElementById("closeSide");
 
-// --- инициализация распознавания речи ---
-if ("webkitSpeechRecognition" in window) {
-  recognition = new webkitSpeechRecognition();
+const themeToggle = document.getElementById("themeToggle");
+const themeLabel = document.getElementById("themeLabel");
+const enterToggle = document.getElementById("enterToggle");
+const ttsToggle = document.getElementById("ttsToggle");
+
+const firstModal = document.getElementById("firstModal");
+const modalEnterYes = document.getElementById("modalEnterYes");
+const modalEnterNo = document.getElementById("modalEnterNo");
+const modalTtsYes = document.getElementById("modalTtsYes");
+const modalTtsNo = document.getElementById("modalTtsNo");
+
+const githubLink = document.getElementById("githubLink");
+
+const LS = {
+  theme: "metro_theme",
+  enter: "metro_enter_send", 
+  tts: "metro_tts", 
+  firstSeen: "metro_first_seen",
+};
+
+let isRecording = false;
+let recognition = null;
+
+function loadSettings() {
+  const theme = localStorage.getItem(LS.theme) || "dark";
+  applyTheme(theme);
+
+  const enter = localStorage.getItem(LS.enter);
+  const enterBool = enter === null ? true : enter === "1";
+  enterToggle.checked = enterBool;
+
+  const tts = localStorage.getItem(LS.tts);
+  const ttsBool = tts === null ? true : tts === "1";
+  ttsToggle.checked = ttsBool;
+
+  updateThemeLabel();
+  updateEnterBehavior();
+}
+
+function applyTheme(theme) {
+  if (theme === "light") {
+    document.documentElement.classList.add("light");
+    localStorage.setItem(LS.theme, "light");
+  } else {
+    document.documentElement.classList.remove("light");
+    localStorage.setItem(LS.theme, "dark");
+  }
+  updateThemeLabel();
+}
+
+function updateThemeLabel() {
+  const cur = document.documentElement.classList.contains("light") ? "light" : "dark";
+  themeLabel.textContent = cur === "light" ? "Тёмная тема" : "Светлая тема";
+  themeToggle.checked = cur === "light";
+}
+
+function updateEnterBehavior() {
+  const enabled = enterToggle.checked;
+  if (enabled) {
+    input.setAttribute("placeholder", "Введите сообщение... (Enter — отправить, Shift+Enter — перенос)");
+  } else {
+    input.setAttribute("placeholder", "Введите сообщение... (Enter — перенос, Ctrl/Cmd+Enter — отправить)");
+  }
+  localStorage.setItem(LS.enter, enabled ? "1" : "0");
+}
+
+function ttsEnabled() {
+  return ttsToggle.checked;
+}
+
+dotsBtn.addEventListener("click", () => {
+  sidePanel.classList.toggle("open");
+  sidePanel.setAttribute("aria-hidden", sidePanel.classList.contains("open") ? "false" : "true");
+});
+closeSide.addEventListener("click", () => {
+  sidePanel.classList.remove("open");
+  sidePanel.setAttribute("aria-hidden", "true");
+});
+
+themeToggle.addEventListener("change", (e) => {
+  const next = e.target.checked ? "light" : "dark";
+  applyTheme(next);
+});
+
+enterToggle.addEventListener("change", (e) => {
+  localStorage.setItem(LS.enter, e.target.checked ? "1" : "0");
+  updateEnterBehavior();
+});
+
+ttsToggle.addEventListener("change", (e) => {
+  localStorage.setItem(LS.tts, e.target.checked ? "1" : "0");
+});
+
+function showFirstModalIfNeeded() {
+  const seen = localStorage.getItem(LS.firstSeen);
+  if (!seen) {
+    firstModal.classList.remove("hidden");
+  }
+}
+modalEnterYes.addEventListener("click", () => {
+  enterToggle.checked = true;
+  localStorage.setItem(LS.enter, "1");
+  updateEnterBehavior();
+  firstModal.classList.add("hidden");
+  localStorage.setItem(LS.firstSeen, "1");
+});
+modalEnterNo.addEventListener("click", () => {
+  enterToggle.checked = false;
+  localStorage.setItem(LS.enter, "0");
+  updateEnterBehavior();
+  firstModal.classList.add("hidden");
+  localStorage.setItem(LS.firstSeen, "1");
+});
+modalTtsYes.addEventListener("click", () => {
+  ttsToggle.checked = true;
+  localStorage.setItem(LS.tts, "1");
+});
+modalTtsNo.addEventListener("click", () => {
+  ttsToggle.checked = false;
+  localStorage.setItem(LS.tts, "0");
+});
+
+if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
   recognition.lang = "ru-RU";
   recognition.continuous = false;
   recognition.interimResults = false;
@@ -22,31 +143,32 @@ if ("webkitSpeechRecognition" in window) {
   };
 
   recognition.onerror = (event) => {
-    console.error("Speech recognition error:", event.error);
+    console.warn("Speech recognition error:", event.error);
   };
 
   recognition.onend = () => {
     micBtn.classList.remove("recording");
     isRecording = false;
   };
+} else {
+  micBtn.disabled = true;
+  micBtn.title = "Распознавание речи не поддерживается в этом браузере";
 }
-
-// --- действия ---
-sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
-});
 
 micBtn.addEventListener("mousedown", startRecording);
 micBtn.addEventListener("mouseup", stopRecording);
-micBtn.addEventListener("touchstart", startRecording);
-micBtn.addEventListener("touchend", stopRecording);
+micBtn.addEventListener("touchstart", (e) => { e.preventDefault(); startRecording(); });
+micBtn.addEventListener("touchend", (e) => { e.preventDefault(); stopRecording(); });
 
 function startRecording() {
   if (!recognition || isRecording) return;
   isRecording = true;
   micBtn.classList.add("recording");
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (err) {
+    console.warn(err);
+  }
 }
 
 function stopRecording() {
@@ -56,7 +178,6 @@ function stopRecording() {
   isRecording = false;
 }
 
-// --- добавление сообщений ---
 function addMessage(sender, text, cls) {
   const el = document.createElement("div");
   el.className = `message ${cls}`;
@@ -68,8 +189,7 @@ function addMessage(sender, text, cls) {
   return el;
 }
 
-// --- набор текста по буквам ---
-async function typeText(el, fullText, delay = 35) {
+async function typeText(el, fullText, delay = 25) {
   el.innerHTML = "";
   for (let i = 0; i < fullText.length; i++) {
     el.innerHTML += escapeHtml(fullText[i]);
@@ -78,8 +198,8 @@ async function typeText(el, fullText, delay = 35) {
   }
 }
 
-// --- TTS воспроизведение ---
 function speak(text) {
+  if (!ttsEnabled()) return;
   if (!("speechSynthesis" in window)) return;
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "ru-RU";
@@ -87,12 +207,20 @@ function speak(text) {
   u.pitch = 1;
   u.volume = 1;
   const voices = speechSynthesis.getVoices();
-  if (voices.length) u.voice = voices.find((v) => v.lang.startsWith("ru")) || voices[0];
+  if (voices.length) u.voice = voices.find((v) => v.lang && v.lang.startsWith("ru")) || voices[0];
   speechSynthesis.cancel();
   speechSynthesis.speak(u);
 }
 
-// --- отправка сообщений ---
+function escapeHtml(unsafe) {
+  return unsafe
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -127,11 +255,34 @@ async function sendMessage() {
   }
 }
 
-function escapeHtml(unsafe) {
-  return unsafe
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+input.addEventListener("keydown", (e) => {
+  const enterMode = localStorage.getItem(LS.enter);
+  const enterEnabled = enterMode === null ? true : enterMode === "1";
+
+  if (enterEnabled) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  } else {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+});
+
+sendBtn.addEventListener("click", sendMessage);
+
+loadSettings();
+showFirstModalIfNeeded();
+
+if ("speechSynthesis" in window) {
+  speechSynthesis.getVoices(); 
 }
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    sidePanel.classList.remove("open");
+  }
+});
