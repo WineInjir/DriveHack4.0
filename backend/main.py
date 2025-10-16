@@ -5,6 +5,7 @@ from gtts import gTTS
 from datetime import datetime
 from elevenlabs.client import ElevenLabs
 from elevenlabs import play
+import os
 
 # ==============================
 # 🔧 НАСТРОЙКИ
@@ -160,6 +161,11 @@ async def chat(request):
         write_log(f"🤖 Ответ бота: {bot_text[:100]}...")
 
         # 🎤 Озвучка через ElevenLabs
+        try:
+            os.remove("metro-chatbot/temp.mp3")
+        except:
+            print("старый аудиофайл не найден, продолжаю")
+
         audio = client.text_to_speech.convert(
             text=bot_text,
             voice_id="kwajW3Xh5svCeKU5ky2S",
