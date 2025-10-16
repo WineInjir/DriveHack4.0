@@ -1,99 +1,98 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Metro ChatBot 🚇</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
-    <header>
-      <div class="header-left">Чат с помощником Московского метро 🚇</div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Metro ChatBot 🚇</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-left">Чат с помощником Московского метро 🚇</div>
+    <div class="header-right">
+      <button id="dotsBtn" class="icon-btn" title="Меню">⋯</button>
+    </div>
+  </header>
 
-      <div class="header-right">
-        <button id="dotsBtn" class="icon-btn" title="Меню">⋯</button>
-      </div>
-    </header>
-
-    <!-- side settings panel -->
-    <aside id="sidePanel" aria-hidden="true">
-      <div class="sideHeader">
-        <div class="sideTitle">Настройки</div>
-        <button id="closeSide" class="icon-btn">✕</button>
-      </div>
-
-      <div class="sideContent">
-        <div class="setting">
-          <div class="setting-label">
-            <div>Тема</div>
-            <div class="small-label" id="themeLabel">Тёмная тема</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="themeToggle" />
-            <span class="slider"></span>
-          </label>
-        </div>
-
-        <div class="setting">
-          <div class="setting-label">
-            <div>Отправка по Enter</div>
-            <div class="small-label">Нажмите чтобы включить/выключить</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="enterToggle" />
-            <span class="slider"></span>
-          </label>
-        </div>
-
-        <div class="setting">
-          <div class="setting-label">
-            <div>Озвучка (TTS)</div>
-            <div class="small-label">Озвучивать ответы голосом</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="ttsToggle" />
-            <span class="slider"></span>
-          </label>
-        </div>
-
-        <div class="hint">
-          Настройки сохраняются и могут быть изменены в любое время.
-        </div>
-      </div>
-
-      <div class="sideFooter">
-        <a id="githubLink" class="github-btn" href="https://github.com/WineInjir/DriveHack4.0/tree/main" target="_blank" rel="noopener">
-          <span class="gh-icon">🐙</span> GitHub
-        </a>
-      </div>
-    </aside>
-
-    <div id="chat" role="log" aria-live="polite"></div>
-
-    <div id="inputArea">
-      <button id="micBtn" title="Нажмите и держите для записи">🎤</button>
-      <input id="userInput" type="text" placeholder="Введите сообщение..." autocomplete="off" />
-      <button id="sendBtn">Отправить</button>
+  <aside id="sidePanel" aria-hidden="true">
+    <div class="sideHeader">
+      <div class="sideTitle">Настройки</div>
+      <button id="closeSide" class="icon-btn" aria-label="Закрыть">✕</button>
     </div>
 
-    <!-- First-visit modal -->
-    <div id="firstModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modalContent">
-        <h2 id="modalTitle">Настройки при первом входе</h2>
-        <p>Хотите включить отправку сообщений по клавише Enter?</p>
-        <div class="modalRow">
-          <button id="modalEnterYes" class="primary">Включить отправку по Enter</button>
-          <button id="modalEnterNo" class="secondary">Не включать (Enter — перенос)</button>
+
+
+      <div class="setting">
+        <div class="setting-label">
+          <div>Отправка по Enter</div>
+          <div class="small-label">Если включено — Enter отправляет</div>
         </div>
-        <p>Озвучивать ли ответы голосом? (можно изменить в настройках)</p>
-        <div class="modalRow">
-          <button id="modalTtsYes" class="primary small">Включить озвучку</button>
-          <button id="modalTtsNo" class="secondary small">Не включать</button>
+        <label class="switch" title="Отправлять по Enter">
+          <input type="checkbox" id="enterToggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting">
+        <div class="setting-label">
+          <div>Озвучка</div>
+          <div class="small-label">Озвучивать ответы голосом</div>
         </div>
-        <div class="modalNote">Напоминание: режимы можно изменить в настройках (кнопка ⋯ в шапке).</div>
+        <label class="switch" title="Включить/выключить TTS">
+          <input type="checkbox" id="ttsToggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="hint">
+        Настройки сохраняются и могут быть изменены в любое время.
       </div>
     </div>
 
-    <script src="/js/main.js"></script>
-  </body>
+    <div class="sideFooter">
+      <a id="githubLink" class="github-btn" href="https://github.com/WineInjir/DriveHack4.0/tree/main" target="_blank" rel="noopener">
+        <span class="gh-icon">🐙</span> GitHub
+      </a>
+    </div>
+  </aside>
+
+  <main id="chat" role="log" aria-live="polite"></main>
+
+  <div id="inputArea">
+    <button id="micBtn" title="Нажмите и держите для записи">🎤</button>
+    <input id="userInput" type="text" placeholder="Введите сообщение..." autocomplete="off" />
+    <button id="sendBtn">Отправить</button>
+  </div>
+
+  <!-- Первое модальное окно -->
+  <div id="firstModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modalContent">
+      <h2 id="modalTitle">Привет! Пара быстрых настроек</h2>
+
+      <div class="modalSection">
+        <p><strong>Отправка по Enter</strong></p>
+        <div class="modalRow">
+          <button id="modalEnterYes" class="option-btn">Включить (Enter — отправка)</button>
+          <button id="modalEnterNo" class="option-btn">Не включать (Enter — перенос)</button>
+        </div>
+      </div>
+
+      <div class="modalSection">
+        <p><strong>Озвучка ответов</strong></p>
+        <div class="modalRow">
+          <button id="modalTtsYes" class="option-btn">Озвучивать</button>
+          <button id="modalTtsNo" class="option-btn">Не озвучивать</button>
+        </div>
+      </div>
+
+      <div class="modalNote">Эти параметры можно изменить позже в настройках (кнопка ⋯ в шапке).</div>
+
+      <div class="modalActions">
+        <button id="modalConfirm" class="primary">Применить и продолжить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
 </html>
